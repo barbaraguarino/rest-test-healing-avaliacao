@@ -4,7 +4,7 @@ Script de métricas do estudo "Manutenção de Testes de APIs REST usando Agente
 
 Este repositório **implementa** o acordo; ele não o define. Métricas, fórmulas, critério de reparo correto, formato do arquivo de resultados e tratamento de execuções com erro estão no documento *2. Planejamento do Estudo* (§13, "Acordo de avaliação comum", e §15, "Plano de Análise") e na *1. Definição do Estudo* (§4, matriz de confusão e árvore GQM), no repositório `rest-test-healing-estudo`. Se este código e esses documentos divergirem, valem os documentos.
 
-O script não usa LLM, não chama API paga e só depende da biblioteca padrão do Python 3. A estatística de inferência (McNemar e correção de Bonferroni) é outra tarefa (T20b) e não está aqui.
+O script não usa LLM, não chama API paga e só depende da biblioteca padrão do Python 3. A estatística de inferência (McNemar mid-p e limiar de Bonferroni, T20b) está em `avaliacao/estatistica.py` e `avaliacao/mcnemar.py`; as métricas da T20a não mudaram.
 
 ## Como rodar
 
@@ -19,6 +19,17 @@ python -m avaliacao caminho/para/resultados-agente1.json --json metricas.json
 - `--json` grava o mesmo relatório em JSON, para a análise estatística.
 - Métrica com denominador zero aparece como `n/d` (texto) e `null` (JSON).
 - Se o arquivo não passar na validação, nenhuma métrica é calculada: o script lista todos os problemas e termina com código 2.
+
+### Teste de hipóteses (T20b), pelo PyCharm
+
+Compara a baseline com a versão agêntica, por agente: três hipóteses (Detection Accuracy em todos os casos, Repair Rate nos legítimos, Safety nos `problema_real`), com McNemar mid-p bicaudal (D126) e limiar de Bonferroni α/3 ≈ 0,0167 (D84).
+
+*Run → Edit Configurations → + → Python*; em *Run*, escolha **Module name** e digite `avaliacao.mcnemar`; em *Parameters*, os caminhos dos arquivos de resultados separados por espaço (baseline e versão agêntica; um arquivo por tratamento, ou um só se ele já tiver os dois); para gravar também em JSON, acrescente `--json saida.json`; em *Working directory*, a pasta deste repositório.
+
+- Cada arquivo passa pela mesma validação das métricas; se algum for recusado, nada é testado (código 2).
+- O pareamento é por `id_caso`, depois da maioria das repetições. Se um caso faltar num dos tratamentos, o script para e lista os casos (código 3).
+- Na tabela: b = só a baseline acertou; c = só a versão agêntica acertou; n = b + c. Sem nenhum par discordante (n = 0) não há teste, só o descritivo. A decisão compara o p direto com o limiar α/3, sem p ajustado (D140).
+- O agente único e a versão `v1` ficam fora do teste.
 
 ### No IntelliJ
 
