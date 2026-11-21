@@ -4,7 +4,7 @@ Script de métricas do estudo "Manutenção de Testes de APIs REST usando Agente
 
 Este repositório **implementa** o acordo; ele não o define. Métricas, fórmulas, critério de reparo correto, formato do arquivo de resultados e tratamento de execuções com erro estão no documento *2. Planejamento do Estudo* (§13, "Acordo de avaliação comum", e §15, "Plano de Análise") e na *1. Definição do Estudo* (§4, matriz de confusão e árvore GQM), no repositório `rest-test-healing-estudo`. Se este código e esses documentos divergirem, valem os documentos.
 
-O script não usa LLM, não chama API paga e só depende da biblioteca padrão do Python 3. A estatística de inferência (McNemar mid-p e limiar de Bonferroni, T20b) está em `avaliacao/estatistica.py` e `avaliacao/mcnemar.py`; as métricas da T20a não mudaram.
+O script não usa LLM, não chama API paga e só depende da biblioteca padrão do Python 3. Testado com Python 3.14.4 (os 75 testes passam, em 21/11/2026). A estatística de inferência (McNemar mid-p e limiar de Bonferroni, T20b) está em `avaliacao/estatistica.py` e `avaliacao/mcnemar.py`; as métricas da T20a não mudaram.
 
 ## Como rodar
 
